@@ -38,10 +38,10 @@ public class AssessmentsResource {
   @POST
   @Produces("application/json")
   @Consumes("application/json")
-  public Response createAssessment(@NotNull @Valid ApplicationDto data) {
+  public Response createAssessment(@NotNull @Valid List<ApplicationDto> data) {
     return Response
       .status(Status.CREATED)
-      .entity(service.createAssessment(data.getApplicationId()))
+      .entity(service.createAssessment(data.stream().map(e -> e.getApplicationId()).collect(Collectors.toList())))
       .type(MediaType.APPLICATION_JSON)
       .build();
   }

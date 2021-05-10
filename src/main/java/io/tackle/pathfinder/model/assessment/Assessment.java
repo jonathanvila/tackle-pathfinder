@@ -34,9 +34,11 @@ public class Assessment extends AbstractEntity {
     @Enumerated(value = EnumType.STRING)
     public AssessmentStatus status;
 
+    /*
     @Basic(optional = false)
     @Column(name="application_id")
     public Long applicationId;
+*/
 
     @Column(length = 1000)
     public String comment;
@@ -51,4 +53,8 @@ public class Assessment extends AbstractEntity {
     @OneToMany(mappedBy = "assessment", cascade = CascadeType.REMOVE)
     @Builder.Default
     public List<AssessmentStakeholdergroup> stakeholdergroups = new ArrayList<>();
+
+    @OneToMany(mappedBy = "assessment", cascade = CascadeType.ALL)
+    @Builder.Default
+    public List<AssessmentApplication> applications= new ArrayList<>();
 }

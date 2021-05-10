@@ -4,13 +4,7 @@ import io.tackle.pathfinder.dto.AssessmentDto;
 import io.tackle.pathfinder.dto.AssessmentHeaderDto;
 import io.tackle.pathfinder.dto.AssessmentStatus;
 import io.tackle.pathfinder.mapper.AssessmentMapper;
-import io.tackle.pathfinder.model.assessment.Assessment;
-import io.tackle.pathfinder.model.assessment.AssessmentCategory;
-import io.tackle.pathfinder.model.assessment.AssessmentQuestion;
-import io.tackle.pathfinder.model.assessment.AssessmentQuestionnaire;
-import io.tackle.pathfinder.model.assessment.AssessmentSingleOption;
-import io.tackle.pathfinder.model.assessment.AssessmentStakeholder;
-import io.tackle.pathfinder.model.assessment.AssessmentStakeholdergroup;
+import io.tackle.pathfinder.model.assessment.*;
 import io.tackle.pathfinder.model.questionnaire.Category;
 import io.tackle.pathfinder.model.questionnaire.Question;
 import io.tackle.pathfinder.model.questionnaire.Questionnaire;
@@ -28,6 +22,7 @@ import javax.ws.rs.NotFoundException;
 import java.util.List;
 import java.util.Optional;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 @ApplicationScoped
 @Log
@@ -41,12 +36,15 @@ public class AssessmentSvc {
     }
 
     @Transactional
-    public AssessmentHeaderDto createAssessment(@NotNull Long applicationId) {
-        long count = Assessment.count("application_id", applicationId);
-        log.log(Level.FINE,"Assessments for application_id [ " + applicationId + "] : " + count);
+    public AssessmentHeaderDto createAssessment(@NotNull List<Long> applications) {
+        long count = Assessment.count("applications", applications);
+        log.log(Level.FINE,"Assessments for application_id [ " + applications + "] : " + count);
         if (count == 0) {
             Assessment assessment = new Assessment();
-            assessment.applicationId = applicationId;
+            assessment.applications.addAll(applications.stream().map(e -> AssessmentApplication.builder()
+                                                                    .applicationId(e)
+                                                                    .assessment(assessment)
+                                                                    .build()).collect(Collectors.toList()));
             assessment.status = AssessmentStatus.STARTED;
             assessment.persistAndFlush();
 

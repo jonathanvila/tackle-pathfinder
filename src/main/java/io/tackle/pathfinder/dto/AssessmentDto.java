@@ -50,9 +50,9 @@ public class AssessmentDto {
      * Application id
      * 
      */
-    @JsonProperty("applicationId")
-    @JsonPropertyDescription("Application id")
-    private Long applicationId;
+    @JsonProperty("applications")
+    @JsonPropertyDescription("Applications")
+    private List<Long> applications;
     /**
      * Current status of the assessment
      * 

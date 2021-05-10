@@ -76,7 +76,7 @@ public class AssessmentsResourceTest extends SecuredResourceTest {
 
     @Test
 	public void given_ApplicationWithAssessment_When_Get_Then_ReturnsHeaderDto() {
-		assessmentSvc.createAssessment(20L);
+		assessmentSvc.createAssessment(List.of(20L));
 
 		AssessmentHeaderDto[] assessments = given()
 			.queryParam("applicationId", "20")
@@ -111,7 +111,7 @@ public class AssessmentsResourceTest extends SecuredResourceTest {
 		given()
 			.contentType(ContentType.JSON)
 			.accept(ContentType.JSON)
-			.body(new ApplicationDto(20L))
+			.body(List.of(new ApplicationDto(20L)))
 		.when()
 			.post("/assessments")
 		.then()
@@ -127,7 +127,7 @@ public class AssessmentsResourceTest extends SecuredResourceTest {
 		given()
 			.contentType(ContentType.JSON)
 			.accept(ContentType.JSON)
-			.body(new ApplicationDto())
+			.body(List.of(new ApplicationDto()))
 		.when()
 			.post("/assessments")
 		.then()
@@ -136,12 +136,12 @@ public class AssessmentsResourceTest extends SecuredResourceTest {
 
 	@Test
 	public void given_ApplicationWithAssessment_When_CreateAssessment_Then_Returns400() {
-		assessmentSvc.createAssessment(20L);
+		assessmentSvc.createAssessment(List.of(20L));
 
 		given()
 		    .contentType(ContentType.JSON)
 			.accept(ContentType.JSON)
-			.body(new ApplicationDto(20L))
+			.body(List.of(new ApplicationDto(20L)))
 		.when()
 			.post("/assessments")
 		.then()
@@ -178,7 +178,7 @@ public class AssessmentsResourceTest extends SecuredResourceTest {
 			ValidatableResponse response = given()
 				.contentType(ContentType.JSON)
 				.accept(ContentType.JSON)
-				.body(new ApplicationDto(330L))
+				.body(List.of(new ApplicationDto(330L)))
 			.when()
 				.post("/assessments")
 			.then()
@@ -198,7 +198,7 @@ public class AssessmentsResourceTest extends SecuredResourceTest {
 			ValidatableResponse response =  given()
 				.contentType(ContentType.JSON)
 				.accept(ContentType.JSON)
-				.body(new ApplicationDto(330L))
+				.body(List.of(new ApplicationDto(330L)))
 			.when()
 				.post("/assessments")
 			.then()
@@ -218,7 +218,7 @@ public class AssessmentsResourceTest extends SecuredResourceTest {
 		AssessmentHeaderDto header = given()
 			.contentType(ContentType.JSON)
 			.accept(ContentType.JSON)
-			.body(new ApplicationDto(400L))
+			.body(List.of(new ApplicationDto(400L)))
 		.when()
 			.post("/assessments")
 		.then()
@@ -256,7 +256,7 @@ public class AssessmentsResourceTest extends SecuredResourceTest {
 		AssessmentHeaderDto header = given()
 			.contentType(ContentType.JSON)
 			.accept(ContentType.JSON)
-			.body(new ApplicationDto(500L))
+			.body(List.of(new ApplicationDto(500L)))
 		.when()
 			.post("/assessments")
 		.then()
@@ -284,7 +284,7 @@ public class AssessmentsResourceTest extends SecuredResourceTest {
 		  .contentType(ContentType.JSON)
 		  .accept(ContentType.JSON)
 		  .body(AssessmentDto.builder()
-		  		.applicationId(500L)
+		  		.applications(List.of(500L))
 				.id(header.getId())
 				.questionnaire(
 					AssessmentQuestionnaireDto.builder()
@@ -338,7 +338,7 @@ public class AssessmentsResourceTest extends SecuredResourceTest {
 		AssessmentHeaderDto header = given()
 			.contentType(ContentType.JSON)
 			.accept(ContentType.JSON)
-			.body(new ApplicationDto(5500L))
+			.body(List.of(new ApplicationDto(5500L)))
 		.when()
 			.post("/assessments")
 		.then()
@@ -379,7 +379,7 @@ public class AssessmentsResourceTest extends SecuredResourceTest {
 		AssessmentHeaderDto header = given()
 			.contentType(ContentType.JSON)
 			.accept(ContentType.JSON)
-			.body(new ApplicationDto(6500L))
+			.body(List.of(new ApplicationDto(6500L)))
 		.when()
 			.post("/assessments")
 		.then()
@@ -416,7 +416,7 @@ public class AssessmentsResourceTest extends SecuredResourceTest {
 		AssessmentHeaderDto header = given()
 			.contentType(ContentType.JSON)
 			.accept(ContentType.JSON)
-			.body(new ApplicationDto(7500L))
+			.body(List.of(new ApplicationDto(7500L)))
 		.when()
 			.post("/assessments")
 		.then()
@@ -455,7 +455,7 @@ public class AssessmentsResourceTest extends SecuredResourceTest {
 		AssessmentHeaderDto header = given()
 			.contentType(ContentType.JSON)
 			.accept(ContentType.JSON)
-			.body(new ApplicationDto(29500L))
+			.body(List.of(new ApplicationDto(29500L)))
 		.when()
 			.post("/assessments")
 		.then()
@@ -499,7 +499,7 @@ public class AssessmentsResourceTest extends SecuredResourceTest {
 		AssessmentHeaderDto header = given()
 			.contentType(ContentType.JSON)
 			.accept(ContentType.JSON)
-			.body(new ApplicationDto(19500L))
+			.body(List.of(new ApplicationDto(19500L)))
 		.when()
 			.post("/assessments")
 		.then()

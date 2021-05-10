@@ -6,13 +6,7 @@ import io.tackle.pathfinder.dto.AssessmentHeaderDto;
 import io.tackle.pathfinder.dto.AssessmentQuestionDto;
 import io.tackle.pathfinder.dto.AssessmentQuestionOptionDto;
 import io.tackle.pathfinder.dto.AssessmentQuestionnaireDto;
-import io.tackle.pathfinder.model.assessment.Assessment;
-import io.tackle.pathfinder.model.assessment.AssessmentCategory;
-import io.tackle.pathfinder.model.assessment.AssessmentQuestion;
-import io.tackle.pathfinder.model.assessment.AssessmentQuestionnaire;
-import io.tackle.pathfinder.model.assessment.AssessmentSingleOption;
-import io.tackle.pathfinder.model.assessment.AssessmentStakeholder;
-import io.tackle.pathfinder.model.assessment.AssessmentStakeholdergroup;
+import io.tackle.pathfinder.model.assessment.*;
 import lombok.extern.java.Log;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -47,6 +41,10 @@ public interface AssessmentMapper {
     }
     default List<Long> assessmentStakeholderGroupListToLongList(List<AssessmentStakeholdergroup> stakeholdergroup) {
         return stakeholdergroup.stream().map(e -> e.stakeholdergroupId).collect(Collectors.toList());
+    }
+
+    default List<Long> assessmentApplicationListToLongList(List<AssessmentApplication> applications) {
+        return applications.stream().map(e -> e.applicationId).collect(Collectors.toList());
     }
 
     @Mapping(target = "questionnaire", source = "assessmentQuestionnaire")

@@ -13,13 +13,7 @@ import io.tackle.pathfinder.dto.AssessmentQuestionOptionDto;
 import io.tackle.pathfinder.mapper.AssessmentMapper;
 import io.tackle.pathfinder.model.QuestionType;
 import io.tackle.pathfinder.model.Risk;
-import io.tackle.pathfinder.model.assessment.Assessment;
-import io.tackle.pathfinder.model.assessment.AssessmentCategory;
-import io.tackle.pathfinder.model.assessment.AssessmentQuestion;
-import io.tackle.pathfinder.model.assessment.AssessmentQuestionnaire;
-import io.tackle.pathfinder.model.assessment.AssessmentSingleOption;
-import io.tackle.pathfinder.model.assessment.AssessmentStakeholder;
-import io.tackle.pathfinder.model.assessment.AssessmentStakeholdergroup;
+import io.tackle.pathfinder.model.assessment.*;
 import io.tackle.pathfinder.model.questionnaire.Category;
 import io.tackle.pathfinder.model.questionnaire.Question;
 import io.tackle.pathfinder.model.questionnaire.Questionnaire;
@@ -70,7 +64,7 @@ public class AssessmentSvcTest {
         Questionnaire questionnaire = createQuestionnaire();
         List<Category> categories = questionnaire.categories;
 
-        Assessment assessment = createAssessment(questionnaire, 10L);
+        Assessment assessment = createAssessment(questionnaire, List.of(10L));
         AssessmentQuestionnaire assessmentQuestionnaire = assessment.assessmentQuestionnaire;
         List<AssessmentCategory> categoriesAssessQuestionnaire = assessmentQuestionnaire.categories;
 
@@ -110,7 +104,7 @@ public class AssessmentSvcTest {
 
     @Test
     public void given_CreatedAssessment_When_Update_Then_ItChangesOnlyThePartSent() throws InterruptedException {
-        Assessment assessment = createAssessment(Questionnaire.findAll().firstResult(), 1410L);
+        Assessment assessment = createAssessment(Questionnaire.findAll().firstResult(), List.of(1410L));
 
         assertThat(assessment.stakeholdergroups).hasSize(2);
         assertThat(assessment.stakeholders).hasSize(3);
@@ -149,7 +143,7 @@ public class AssessmentSvcTest {
 
     @Test
     public void given_CreatedAssessment_When_UpdateWithStakeholdersNull_Then_ItDoesntChangeStakeholders() throws InterruptedException {
-        Assessment assessment = createAssessment(Questionnaire.findAll().firstResult(), 2410L);
+        Assessment assessment = createAssessment(Questionnaire.findAll().firstResult(), List.of(2410L));
 
         assertThat(assessment.stakeholders).extracting(e -> e.stakeholderId).containsExactlyInAnyOrder(100L, 200L, 300L);
         assertThat(assessment.stakeholdergroups).extracting(e -> e.stakeholdergroupId).containsExactlyInAnyOrder(500L, 600L);
@@ -171,7 +165,7 @@ public class AssessmentSvcTest {
     
     @Test
     public void given_CreatedAssessment_When_UpdateWithStakeholdersEmpty_Then_ItDeleteAllStakeholders() throws InterruptedException {
-        Assessment assessment = createAssessment(Questionnaire.findAll().firstResult(), 3410L);
+        Assessment assessment = createAssessment(Questionnaire.findAll().firstResult(), List.of(3410L));
 
         assertThat(assessment.stakeholders).extracting(e -> e.stakeholderId).containsExactlyInAnyOrder(100L, 200L, 300L);
         assertThat(assessment.stakeholdergroups).extracting(e -> e.stakeholdergroupId).containsExactlyInAnyOrder(500L, 600L);
@@ -232,9 +226,9 @@ public class AssessmentSvcTest {
     @Test
     public void given_SameApplication_when_SeveralAssessmentCreation_should_ThrowException() throws InterruptedException {
         Questionnaire questionnaire = createQuestionnaire();
-        CompletableFuture<Assessment> future1 = managedExecutor.supplyAsync(() -> createAssessment(questionnaire, 5L));
+        CompletableFuture<Assessment> future1 = managedExecutor.supplyAsync(() -> createAssessment(questionnaire, List.of(5L)));
         Thread.sleep(500);
-        CompletableFuture<Assessment> future4 = managedExecutor.supplyAsync(() -> createAssessment(questionnaire, 5L));
+        CompletableFuture<Assessment> future4 = managedExecutor.supplyAsync(() -> createAssessment(questionnaire, List.of(5L)));
         assertThat(future1).succeedsWithin(Duration.ofSeconds(10)).matches(e -> e.id > 0);
         assertThat(future4).failsWithin(Duration.ofSeconds(1));
     }
@@ -242,18 +236,18 @@ public class AssessmentSvcTest {
     @Test
     public void given_SameApplicationButDeletedTrue_when_SeveralAssessmentCreation_should_NotThrowException() {
         Questionnaire questionnaire = createQuestionnaire();
-        Assessment assessment1 = createAssessment(questionnaire, 200L);
+        Assessment assessment1 = createAssessment(questionnaire, List.of(200L));
         assertThat(assessment1).matches(e -> e.id > 0);
-        assertThatThrownBy(() -> createAssessment(questionnaire, 200L));
+        assertThatThrownBy(() -> createAssessment(questionnaire, List.of(200L)));
         assessmentSvc.deleteAssessment(assessment1.id);
-        Assessment assessment2 = createAssessment(questionnaire, 200L);
+        Assessment assessment2 = createAssessment(questionnaire, List.of(200L));
         assertThat(assessment2).matches(e -> e.id > 0);
     }
 
     @Test
     public void given_CreatedAssessment_When_DeleteAssessment_should_DeleteIt() {
         Questionnaire questionnaire = createQuestionnaire();
-        Assessment assessment = createAssessment(questionnaire, 1200L);
+        Assessment assessment = createAssessment(questionnaire, List.of(1200L));
         assessmentSvc.deleteAssessment(assessment.id);
         assertThat(Assessment.findByIdOptional(assessment.id)).isEmpty();
     }    
@@ -267,7 +261,7 @@ public class AssessmentSvcTest {
     @Transactional
     public void given_AlreadyDeletedAssessment_When_DeleteAssessment_should_ThrowException() {
         Questionnaire questionnaire = createQuestionnaire();
-        Assessment assessment = createAssessment(questionnaire, 897200L);
+        Assessment assessment = createAssessment(questionnaire, List.of(897200L));
         
         assertThat(Assessment.findByIdOptional(assessment.id)).isNotEmpty();
         
@@ -281,7 +275,7 @@ public class AssessmentSvcTest {
     @Transactional
     public void given_Assessment_When_DeleteAssessmentAndFails_should_ThrowException() {
         Questionnaire questionnaire = createQuestionnaire();
-        Assessment assessment = createAssessment(questionnaire, 897200L);
+        Assessment assessment = createAssessment(questionnaire, List.of(897200L));
         
         assertThat(Assessment.findByIdOptional(assessment.id)).isNotEmpty();
 
@@ -294,9 +288,13 @@ public class AssessmentSvcTest {
     }
 
     @Transactional
-    public Assessment createAssessment(Questionnaire questionnaire, long applicationId) {
+    public Assessment createAssessment(Questionnaire questionnaire, List<Long> applications) {
         log.info("Creating an assessment ");
-        Assessment assessment = Assessment.builder().applicationId(applicationId).build();
+        Assessment assessment = Assessment.builder().build();
+        assessment.applications.addAll(applications.stream().map(e -> AssessmentApplication.builder()
+            .applicationId(e)
+            .assessment(assessment)
+            .build()).collect(Collectors.toList()));
         assessment.persistAndFlush();
 
         addStakeholdersToAssessment(assessment);
