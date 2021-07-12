@@ -147,7 +147,7 @@ public class AssessmentSvc {
             // Add not existing stakeholdergroups included in the current array
             assessmentDto.getStakeholderGroups().forEach(e -> {
                 log.log(Level.FINE, "Considering Stakeholdergroup : " + e);
-                if (assessment.stakeholdergroups.stream().noneMatch(o -> e.equals(o.stakeholdergroupId))) {
+                if (assessment.stakeholdergroups.stream().noneMatch(o -> o.stakeholdergroupId == e)) {
                     log.log(Level.FINE,"Adding Stakeholdergroup : " + e);
                     assessment.stakeholdergroups.add(AssessmentStakeholdergroup.builder()
                             .assessment(assessment)
@@ -169,7 +169,7 @@ public class AssessmentSvc {
             // Add not existing stakeholders included in the current array
             assessmentDto.getStakeholders().forEach(e -> {
                 log.log(Level.FINE,"Considering Stakeholder : " + e);
-                if (assessment.stakeholders.stream().noneMatch(o -> e.equals(o.stakeholderId))) {
+                if (assessment.stakeholders.stream().noneMatch(o -> o.stakeholderId == e)) {
                     log.log(Level.FINE,"Adding Stakeholder : " + e);
                     assessment.stakeholders.add(AssessmentStakeholder.builder()
                         .assessment(assessment)
